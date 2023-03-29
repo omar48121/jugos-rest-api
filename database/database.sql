@@ -16,6 +16,8 @@ insert into employee values
 
 CREATE TABLE users (
     userId INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    user VARCHAR(45) NOT NULL,
+    email VARCHAR(45) NOT NULL,
+    name VARCHAR(20) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
     password VARCHAR(100) NOT NULL
 );
