@@ -86,3 +86,18 @@ export const deleteProduct = async (req, res) => {
         });
     }
 }
+
+export const uploadFile = async (req, res) => {
+    try {
+        // Guardar la URL del archivo en la tabla de MySQL
+        const imageUrl = req.file.path;
+        // const [result] = await pool.query('INSERT INTO images (url) VALUES (?)', imageUrl);
+        // const imageId = result.insertId;
+        // res.send({ imageId });
+        console.log(imageUrl);
+        res.send(imageUrl);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al subir la imagen');
+    }
+}
