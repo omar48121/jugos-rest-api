@@ -88,6 +88,25 @@ export const deleteProduct = async (req, res) => {
 }
 
 export const uploadFile = async (req, res) => {
+    const { name, price, description } = req.body;
+    const imageUrl = req.file.filename;
+
+    try {
+        const [rows] = await pool.query('INSERT INTO products (name, price, description, imageUrl) VALUES (?, ?, ?, ?)', [name, price, description, imageUrl]);
+        res.send({
+            id: rows.insertId,
+            name,
+            price,
+            description,
+            imageUrl
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong"
+        });
+    }
+}
+/* export const uploadFile = async (req, res) => {
     try {
         // Guardar la URL del archivo en la tabla de MySQL
         const imageUrl = req.file.path;
@@ -100,4 +119,4 @@ export const uploadFile = async (req, res) => {
         console.error(error);
         res.status(500).send('Error al subir la imagen');
     }
-}
+} */
