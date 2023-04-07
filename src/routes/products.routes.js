@@ -1,4 +1,4 @@
-import { getProducts, getProduct, createProduct, updateProduct, deleteProduct, uploadFile } from '../controllers/products.controller.js';
+import { getProducts, getProduct, createProduct, updateProduct, deleteProduct, uploadFile, getFiles } from '../controllers/products.controller.js';
 import { Router } from "express";
 import path from "path";
 import multer from "multer";
