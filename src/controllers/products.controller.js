@@ -12,6 +12,22 @@ export const getProducts = async (req, res) => {
     }
 }
 
+export const getFiles = async (req, res) => {
+    try {
+        fs.readdir('./uploads/', (err, files) => {
+            if (err) throw err;
+          
+            const fileNames = files.map(file => file);
+          
+            res.json(fileNames);
+          });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Something went wrong"
+        });
+    }
+}
+
 export const getProduct = async (req, res) => {
     const id = req.params.id;
     
@@ -84,7 +100,7 @@ export const deleteProduct = async (req, res) => {
                 console.error(err);
                 return;
               }
-              console.log(`File ${pathToDelete} deleted succesfully`);
+              console.log(`File for id ${id}: ${pathToDelete} deleted succesfully`);
             });
           } else {
             console.error(`File ${pathToDelete} doesn't exists`);
