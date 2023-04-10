@@ -21,3 +21,11 @@ CREATE TABLE users (
     lastName VARCHAR(50) NOT NULL,
     password VARCHAR(100) NOT NULL
 );
+
+CREATE TABLE logs (
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    userId INT NOT NULL,
+    description varchar(100),
+    date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES users(userId)
+)

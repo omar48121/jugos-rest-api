@@ -3,6 +3,7 @@ import cors from 'cors';
 import productRoutes from './routes/products.routes.js';
 import indexRoutes from './routes/index.routes.js';
 import userRoutes from './routes/user.routes.js';
+import logRoutes from './routes/log.routes.js';
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(cors({
 app.use(indexRoutes);
 app.use('/api', productRoutes);
 app.use('/api', userRoutes);
+app.use('/api', logRoutes);
 app.use(express.static('uploads'));
 
 app.use((req, res, next) => {

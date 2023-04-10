@@ -1,77 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload form</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload form</title>
 </head>
-<body>
-    <form id="myForm">
-        <label for="myFile">Selecciona una imagen:</label>
-        <input type="file" id="myFile" name="myFile"><br><br>
-      
-        <label for="text">Name:</label>
-        <input type="text" id="name" name="name"><br><br>
 
-        <label for="text">Description:</label>
-        <input type="text" id="description" name="description"><br><br>
-      
-        <label for="price">Precio del producto:</label>
-        <input type="number" id="price" name="price"><br><br>
-      
-        <button type="submit">Enviar</button>
-    </form>      
+<body id="body">
+  <form id="myForm">
+    <label for="myFile">Selecciona una imagen:</label>
+    <input type="file" id="myFile" name="myFile"><br><br>
+
+    <label for="text">Name:</label>
+    <input type="text" id="name" name="name"><br><br>
+
+    <label for="text">Description:</label>
+    <input type="text" id="description" name="description"><br><br>
+
+    <label for="price">Precio del producto:</label>
+    <input type="number" id="price" name="price"><br><br>
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    var form = document.getElementById("myForm");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      // Obtener los valores de los campos
+      var fileInput = document.getElementById("myFile");
+      var file = fileInput.files[0];
+
+      var nameInput = document.getElementById("name");
+      var name = nameInput.value;
+
+      var descInput = document.getElementById("description");
+      var desc = descInput.value;
+
+      var priceInput = document.getElementById("price");
+      var price = priceInput.value;
+
+      // Crear un objeto FormData y agregar los valores al mismo
+      var formData = new FormData();
+      formData.append("file", file);
+      formData.append("name", name);
+      formData.append("description", desc);
+      formData.append("price", price);
+
+      console.log(formData.getAll('file'))
+      console.log(formData.getAll('name'))
+      console.log(formData.getAll('description'))
+      console.log(formData.getAll('price'))
+
+      fetch("https://jugos-rest-api-production.up.railway.app/api/upload", {
+        method: "POST",
+        body: formData
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("Error en la solicitud.");
+          }
+          return response.json();
+        })
+        .then(function (data) {
+          console.log("Datos enviados:", data);
+        })
+        .catch(function (error) {
+          console.error("Error al enviar los datos:", error);
+        });
+    });
     
-    <script>
-        var form = document.getElementById("myForm");
+    const body = document.getElementById('body');
 
-form.addEventListener("submit", function(event) {
-  event.preventDefault(); 
+    fetch('https://jugos-rest-api-production.up.railway.app/api/files')
+      .then(response => response.json())
+      .then(data => {
+        data.forEach((img, i) => {
+          if (i === 0) return;
+          const imgElement = document.createElement('img');
+          imgElement.src = 'https://jugos-rest-api-production.up.railway.app/' + img;
+          imgElement.width = 200;
+          body.appendChild(imgElement);
+        });
+      })
+      .catch(error => console.error(error));
 
-  // Obtener los valores de los campos
-  var fileInput = document.getElementById("myFile");
-  var file = fileInput.files[0];
-
-  var nameInput = document.getElementById("name");
-  var name = nameInput.value;
-
-  var descInput = document.getElementById("description");
-  var desc = descInput.value;
-
-  var priceInput = document.getElementById("price");
-  var price = priceInput.value;
-
-  // Crear un objeto FormData y agregar los valores al mismo
-  var formData = new FormData();
-  formData.append("file", file);
-  formData.append("name", name);
-  formData.append("description", desc);
-  formData.append("price", price);
-
-  console.log(formData.getAll('file'))
-  console.log(formData.getAll('name'))
-  console.log(formData.getAll('description'))
-  console.log(formData.getAll('price'))
-
-  fetch("http://localhost:3000/api/upload", {
-    method: "POST",
-    body: formData
-  })
-  .then(function(response) {
-    if (!response.ok) {
-      throw new Error("Error en la solicitud.");
-    }
-    return response.json();
-  })
-  .then(function(data) {
-    console.log("Datos enviados:", data);
-  })
-  .catch(function(error) {
-    console.error("Error al enviar los datos:", error);
-  });
-});
-
-    </script>
+  </script>
 </body>
+
 </html>

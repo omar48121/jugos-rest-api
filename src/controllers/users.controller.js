@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { format } from 'mysql2';
 import { pool } from '../db.js';
 
@@ -21,6 +22,9 @@ export const createUser = async (req, res) => {
         console.log("-----> Created new User");
         console.log(result[0].insertId);
         res.sendStatus(201);
+        const sqlInsert = "INSERT INTO logs (userId, description) VALUES (?, ?);";
+        const sqlInsertQuery = format(sqlInsert, [result[0].insertId, 'Usuario registrado']);
+        const result2 = await pool.query(sqlInsertQuery);
     }
 }
 
@@ -36,24 +40,27 @@ export const getUsers = async (req, res) => {
 }
 
 export const authenticateUser = async (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-    const sqlSearch = "SELECT * FROM users WHERE email = ?";
+    const { email, password } = req.body;
+    const sqlSearch = 'SELECT * FROM users WHERE email = ?';
     const search_query = format(sqlSearch, [email]);
     const result = await pool.query(search_query);
-    if (result[0].length == 0) {
-        console.log("--------> User does not exist")
-        res.sendStatus(404)
+  
+    if (result[0].length === 0) {
+      console.log('--------> User does not exist');
+      res.sendStatus(404);
     } else {
-        console.log(result[0][0].password);
-        const hashedPassword = result[0][0].password;
-        if (await bcrypt.compare(password, hashedPassword)) {
-            console.log("--------> Login Successful")
-            res.send(`${email} is logged in!`)
-        }
-        else {
-            console.log("--------> Password Incorrect")
-            res.send("Password incorrect!")
-        }
+      const hashedPassword = result[0][0].password;
+      if (await bcrypt.compare(password, hashedPassword)) {
+        const user = { email: result[0][0].email };
+        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+        console.log('--------> Login Successful');
+        res.json({ accessToken, message: 'success' });
+        const sqlInsert = "INSERT INTO logs (userId, description) VALUES (?, ?);";
+        const sqlInsertQuery = format(sqlInsert, [result[0][0].userId, 'Inicio de sesión']);
+        const result2 = await pool.query(sqlInsertQuery);
+      } else {
+        console.log('--------> Password Incorrect');
+        res.json({ message: 'password incorrect' });
+      }
     }
-}
+  };
