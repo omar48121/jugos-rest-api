@@ -8,16 +8,7 @@ import logRoutes from './routes/log.routes.js';
 const app = express();
 
 app.use(express.json());
-app.use(cors({
-    origin: [
-        'http://127.0.0.1:5501',
-        'http://127.0.0.1:3000',
-        'http://127.0.0.1:5000',
-        'http://127.0.0.1:5500',
-        'https://shared-cranberry3690.netlify.app',
-        '*'
-    ]
-}));
+app.use(cors());
 app.use(indexRoutes);
 app.use('/api', productRoutes);
 app.use('/api', userRoutes);
