@@ -14,7 +14,7 @@ export const getLogs = async (req, res) => {
             })
         });
 
-        res.json(rows);
+        res.json(transformedRows);
     } catch (error) {
         return res.status(500).json({
             message: "Something went wrong"
